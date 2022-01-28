@@ -4,8 +4,7 @@ using namespace std;
 
 int main(void) {
 
-	cout << "Github a fonctionne !!!!";
-
+	cout << "WOOOOOHOOOOOO CA FONCTIONNE !!!!";
 	return 0;
 
 }
