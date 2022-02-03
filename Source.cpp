@@ -1,4 +1,6 @@
+#include <fstream>
 #include <iostream>
+#include <string>
 #include "Cookie.h"
 #include "Customer.h"
 #include "Order.h";
@@ -6,8 +8,15 @@
 
 using namespace std;
 
-int main(void) {
+void loadLists(GeneralManager*); // Pour charger les listes de clients et de commandes
 
+int main(void) {
+	
+	GeneralManager* gm = new GeneralManager();
+
+	loadLists(gm);
+
+	// Pour tester les classes
 	Cookie* c0 = new Cookie("Aux patates", 3);
 	Cookie* c1 = new Cookie("Aux amandes", 4);
 	Cookie* c2 = new Cookie("Au chocolat", 10);
@@ -29,21 +38,33 @@ int main(void) {
 	cout << "order" << o2->toString();
 
 	GeneralManager gm = GeneralManager();
-	gm.AddCustomer(cu0);
-	gm.AddCustomer(cu0);
-	gm.AddCustomer(cu1);
-	gm.AddCustomer(cu2);
-	gm.AddCustomer(cu3, 2);
-	cout << "Liste des customers:\n" << gm.getCustomerListDescription();
+	gm->AddCustomer(cu0);
+	gm->AddCustomer(cu0);
+	gm->AddCustomer(cu1);
+	gm->AddCustomer(cu2);
+	gm->AddCustomer(cu3, 2);
+	cout << "Liste des customers:\n" << gm->getCustomerListDescription();
 
-	gm.AddOrder(o1);
-	gm.AddOrder(o2);
-	cout << "Liste des Commandes:\n" << gm.getOrderListDescription();
-	cout << "Liste des Types de biscuits\n" << gm.getCookieListDescription();
+	gm->AddOrder(o1);
+	gm->AddOrder(o2);
+	cout << "Liste des Commandes:\n" << gm->getOrderListDescription();
+	cout << "Liste des Types de biscuits\n" << gm->getCookieListDescription();
 
-	gm.RemoveAllOrdersFrom("Galio");
-	cout << "Liste des Commandes:\n" << gm.getOrderListDescription();
-	cout << "Liste des Types de biscuits\n" << gm.getCookieListDescription();
+	gm->RemoveAllOrdersFrom("Galio");
+	cout << "Liste des Commandes:\n" << gm->getOrderListDescription();
+	cout << "Liste des Types de biscuits\n" << gm->getCookieListDescription();
+
+
+
+	delete gm;
+	gm = nullptr;
 
 	return 0;
+}
+
+// Charger les listes de Clients et de Commandes
+void loadLists(GeneralManager*) {
+	
+	
+	//gm.AddCustomer()
 }
