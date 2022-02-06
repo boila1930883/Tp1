@@ -5,15 +5,19 @@
 #include "Customer.h"
 #include "Order.h"
 #include "GeneralManager.h"
+#include "TransactionManager.h"
 
 using namespace std;
 
 void loadLists(GeneralManager* gm, string customerFileName, string orderFileName); // Pour charger les listes de clients (customer) et de commandes (order)
 void saveLists(GeneralManager* gm, string customerFileName, string orderFileName); // Pour enregistrer les listes de clients (customer) et de commandes (order)
+void manageTransactions(GeneralManager* gm, string transactionFileName); //Lecture et application des transactions
 
 int main(void) {
 	
-	string customerFileName("PRESIDENTS_CLIENTS.txt"), orderFileName("PRESIDENTS_COMMANDES.txt"); // Pour le moment, car le nom du fichier sera lu à partir du fichier de transactions
+	string customerFileName("PRESIDENTS_CLIENTS.txt"), orderFileName("PRESIDENTS_COMMANDES.txt"), 
+		transactionFileName("PRESIDENTS_TRANSACTIONS.txt");
+	// Pour le moment, car le nom du fichier sera lu à partir du fichier de transactions
 
 	GeneralManager* gm = new GeneralManager();
 
@@ -23,6 +27,8 @@ int main(void) {
 	loadLists(gm, customerFileName, orderFileName);
 
 	saveLists(gm, customerFileName, orderFileName);
+
+	manageTransactions(gm, transactionFileName);
 
 	/* Pour tester les classes
 	Cookie* c0 = new Cookie("Aux patates", 3);
@@ -197,4 +203,70 @@ void saveLists(GeneralManager* gm, string customerFileName, string orderFileName
 	}
 	else
 		cout << "Erreur d'écriture du fichier de commandes !" << endl;
+}
+
+void manageTransactions(GeneralManager* gm, string transactionFileName) {
+	// variables
+	char opCode;
+	int tempInt;
+	string tempString, tempLine, orderFileName, custumerFileName;
+	ifstream transFile;
+	TransactionManager trm(*gm);
+
+	transFile.open(transactionFileName);
+	if (!transFile.fail()) {
+	//tant que le ficher n'est pas fini
+		while (!transFile.eof()) {
+			//lecture de ligne
+			transFile >> opCode;
+			//traitements
+			switch (opCode) {
+				//supresion de client
+			case '-':
+				transFile >> tempString;
+				trm.surpimerClient(tempString);
+				break;
+				//ajout de client
+			case '+':
+				transFile >> tempString;
+				transFile >> tempInt;
+				transFile >> tempLine;
+				trm.ajouterClient(tempString, tempInt, tempLine);
+				break;
+				//ajout de commande
+			case '=':
+				tempString = "";
+				do {
+					tempString.append(tempString);
+					transFile >> tempString;
+				} while (tempString != "&");
+				trm.ajouterCommande(tempLine);
+				break;
+				// afficher toutes les commandes d'un client
+			case '?':
+				transFile >> tempString;
+				trm.afficherComamndes(tempString);
+				break;
+				// Affciher le biscuit plus populaire
+			case '$':
+				trm.afficherPopulaire();
+				break;
+				// Lire les fichers
+			case 'O':
+				transFile >> custumerFileName >> orderFileName;
+				loadLists(gm, custumerFileName, orderFileName);
+				break;
+				// enregistrer les ficher.
+			case 'S':
+				transFile >> custumerFileName >> orderFileName;
+				saveLists(gm, custumerFileName, orderFileName);
+				break;
+			}
+			//fermeture
+			transFile.close();
+		}
+	}
+	else {
+		cout << "Erreur d'ouverture du fichier de transactions !" << endl;
+	}
 }
