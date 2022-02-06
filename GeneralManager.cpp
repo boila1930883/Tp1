@@ -47,6 +47,8 @@ bool GeneralManager::AddCustomer(Customer* newCustomer, int index) { // Retourne
 
 	}
 
+	std::cout << "Ajout d'un client : " << newCustomer->toString();
+
 	nbCustomer ++;
 
 	if (this->getCustomerList () == nullptr) {
@@ -118,7 +120,7 @@ void GeneralManager::AddOrder(Order* newOrder) {
 	Order* currentOrder = this->getOrderList();
 	Cookie* currentOrderCookie = newOrder->getList();
 	Cookie* cookieType = nullptr;
-
+	std::cout << "New Order: " << newOrder->toString();
 	while (currentOrderCookie != nullptr) {
 		cookieType = FindCookieType(currentOrderCookie->getName());
 		if (cookieType == nullptr)

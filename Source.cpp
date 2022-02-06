@@ -21,6 +21,7 @@ int main(void) {
 	setlocale(LC_CTYPE, "fr-FR");
 
 	loadLists(gm, customerFileName, orderFileName);
+
 	saveLists(gm, customerFileName, orderFileName);
 
 	/* Pour tester les classes
@@ -90,8 +91,10 @@ void loadLists(GeneralManager* gm, string customerFileName, string orderFileName
 		while (!customerFile.eof())
 		{
 			customerFile >> name >> civicNumber >> streetName;
+			cout << "Reading : " << name << " " << civicNumber << " " << streetName;
 			ptrCustomer = new Customer(name, streetName, civicNumber);
 			gm->AddCustomer(ptrCustomer);
+			cout << ptrCustomer->toString() << endl;
 		}
 		customerFile.close();
 
@@ -127,9 +130,8 @@ void loadLists(GeneralManager* gm, string customerFileName, string orderFileName
 				ptrOrder->AddTypeOfCookie(ptrCookie);
 
 				orderFile >> cookie;
-
 			} while (cookie != "&");
-
+			cout << ptrOrder->toString();
 			gm->AddOrder(ptrOrder);
 		}
 		orderFile.close();
@@ -153,8 +155,8 @@ void saveLists(GeneralManager* gm, string customerFileName, string orderFileName
 		currentCustomer = gm->getCustomerList();
 		while (currentCustomer != nullptr)
 		{
-			customerFile << currentCustomer->getName() << endl << currentCustomer->getCivicNumber() << endl << currentCustomer->getStreetName() << endl;
-
+			customerFile << endl << currentCustomer->getName() << endl << currentCustomer->getCivicNumber() << endl << currentCustomer->getStreetName();
+			cout << "Ecriture de " << currentCustomer->toString();
 			currentCustomer = currentCustomer->getNext();
 		}
 		customerFile.close();
@@ -176,7 +178,7 @@ void saveLists(GeneralManager* gm, string customerFileName, string orderFileName
 		currentOrder = gm->getOrderList();
 		while (currentOrder != nullptr)
 		{
-			orderFile << currentOrder->getSender()->getName() << endl;
+			orderFile << endl << currentOrder->getSender()->getName() << endl;
 			orderFile << currentOrder->getReceiver()->getName() << endl;
 
 			currentCookie = currentOrder->getList();
@@ -185,7 +187,7 @@ void saveLists(GeneralManager* gm, string customerFileName, string orderFileName
 				orderFile << currentCookie->getName() << " " << currentCookie->getNbCookiesOrdered() << endl;
 				currentCookie = currentCookie->getNext();
 			}
-			orderFile << "&" << endl;
+			orderFile << "&";
 
 			currentOrder = currentOrder->getNext();
 		}
