@@ -64,8 +64,8 @@ int main(void) {
 	//*/
 
 	
-	delete gm;
-	gm = nullptr;
+	//delete gm;
+	//gm = nullptr;
 	
 	system("pause");
 	return 0;
@@ -81,7 +81,7 @@ void loadLists(GeneralManager* gm, string customerFileName, string orderFileName
 	
 	//----- Charger la liste de clients (customer) -----//
 	string name, streetName;
-	int civicNumber;
+	int civicNumber, nbCustomer(0);
 	Customer* ptrCustomer;
 	ifstream customerFile;
 
@@ -91,9 +91,10 @@ void loadLists(GeneralManager* gm, string customerFileName, string orderFileName
 		while (!customerFile.eof())
 		{
 			customerFile >> name >> civicNumber >> streetName;
-			cout << "Reading : " << name << " " << civicNumber << " " << streetName;
+			cout << "Reading : " << name << " " << civicNumber << " " << streetName << "\n";
 			ptrCustomer = new Customer(name, streetName, civicNumber);
-			gm->AddCustomer(ptrCustomer);
+			gm->AddCustomer(ptrCustomer, nbCustomer);
+			nbCustomer = gm->getNbCustomer();
 			cout << ptrCustomer->toString() << endl;
 		}
 		customerFile.close();
@@ -160,7 +161,7 @@ void saveLists(GeneralManager* gm, string customerFileName, string orderFileName
 			currentCustomer = currentCustomer->getNext();
 		}
 		customerFile.close();
-
+		
 		cout << "Écriture du fichier de clients réussie !" << endl;
 	}
 	else

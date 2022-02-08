@@ -47,7 +47,7 @@ bool GeneralManager::AddCustomer(Customer* newCustomer, int index) { // Retourne
 
 	}
 
-	std::cout << "Ajout d'un client : " << newCustomer->toString();
+	//std::cout << "Ajout d'un client : " << newCustomer->toString();
 
 	nbCustomer ++;
 
@@ -56,7 +56,7 @@ bool GeneralManager::AddCustomer(Customer* newCustomer, int index) { // Retourne
 		return true;
 	}
 
-	if (index == 0) {
+	if (index == 0) {						// Ajout à la tête lors du chargement de la liste
 		currentCustomer->setPrevious(newCustomer);
 		newCustomer->setNext(currentCustomer);
 		this->customersList = newCustomer;
@@ -64,11 +64,14 @@ bool GeneralManager::AddCustomer(Customer* newCustomer, int index) { // Retourne
 	}
 
 	while (currentIndex != index) {
-		currentCustomer = currentCustomer->getNext();
+		if (currentCustomer->getNext() != nullptr)
+		{
+			currentCustomer = currentCustomer->getNext();
+		}
 		currentIndex++;
 	}
 	
-	if (index = nbCustomer - 1) { // Si on ajoute a la queue
+	if (index = nbCustomer - 1) {			// Si on ajoute a la queue
 		newCustomer->setPrevious(currentCustomer);
 		newCustomer->setNext(nullptr);
 		currentCustomer->setNext(newCustomer) ;
