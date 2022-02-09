@@ -1,0 +1,40 @@
+
+Gerald_Ford
+Chester_Arthur
+chocolat 81
+double_chocolat 55
+triple_chocolat 8
+pepittes_de_chocolat 95
+beurre_d'arachide 39
+avoine 17
+&
+Franklin_Pierce
+James_Madison
+chocolat 10
+double_chocolat 10
+triple_chocolat 40
+&
+James_Garfield
+James_K._Polk
+chocolat 73
+double_chocolat 33
+triple_chocolat 17
+pepittes_de_chocolat 2
+&
+Richard_Nixon
+Thomas_Jefferson
+chocolat 28
+double_chocolat 73
+triple_chocolat 59
+pepittes_de_chocolat 22
+beurre_d'arachide 100
+&
+George_Bush
+Dwight_Eisenhower
+chocolat 49
+&
+Millard_Fillmore
+Benjamin_Harrison
+chocolat 27
+&
+Gerald_Ford

@@ -15,18 +15,13 @@ void manageTransactions(GeneralManager* gm, string transactionFileName); //Lectu
 
 int main(void) {
 	
-	string customerFileName("PRESIDENTS_CLIENTS.txt"), orderFileName("PRESIDENTS_COMMANDES.txt"), 
-		transactionFileName("PRESIDENTS_TRANSACTIONS.txt");
+	string transactionFileName("PRESIDENTS_TRANSACTIONS.txt");
 	// Pour le moment, car le nom du fichier sera lu à partir du fichier de transactions
 
 	GeneralManager* gm = new GeneralManager();
 
 
 	setlocale(LC_CTYPE, "fr-FR");
-
-	loadLists(gm, customerFileName, orderFileName);
-
-	saveLists(gm, customerFileName, orderFileName);
 
 	manageTransactions(gm, transactionFileName);
 
@@ -97,7 +92,7 @@ void loadLists(GeneralManager* gm, string customerFileName, string orderFileName
 		while (!customerFile.eof())
 		{
 			customerFile >> name >> civicNumber >> streetName;
-			cout << "Reading : " << name << " " << civicNumber << " " << streetName;
+			//cout << "Reading : " << name << " " << civicNumber << " " << streetName;
 			ptrCustomer = new Customer(name, streetName, civicNumber);
 			gm->AddCustomer(ptrCustomer);
 			cout << ptrCustomer->toString() << endl;
@@ -211,14 +206,16 @@ void manageTransactions(GeneralManager* gm, string transactionFileName) {
 	int tempInt;
 	string tempString, tempLine, orderFileName, custumerFileName;
 	ifstream transFile;
-	TransactionManager trm(*gm);
+	TransactionManager trm(gm);
 
 	transFile.open(transactionFileName);
+
 	if (!transFile.fail()) {
 	//tant que le ficher n'est pas fini
 		while (!transFile.eof()) {
 			//lecture de ligne
 			transFile >> opCode;
+
 			//traitements
 			switch (opCode) {
 				//supresion de client
@@ -236,8 +233,10 @@ void manageTransactions(GeneralManager* gm, string transactionFileName) {
 				//ajout de commande
 			case '=':
 				tempString = "";
-				do {
-					tempString.append(tempString);
+				tempLine = "";
+				do {	
+					tempLine += tempString;
+					tempLine += '-';
 					transFile >> tempString;
 				} while (tempString != "&");
 				trm.ajouterCommande(tempLine);
@@ -261,10 +260,13 @@ void manageTransactions(GeneralManager* gm, string transactionFileName) {
 				transFile >> custumerFileName >> orderFileName;
 				saveLists(gm, custumerFileName, orderFileName);
 				break;
-			}
-			//fermeture
-			transFile.close();
+			default:
+				cout << "Probleme de lecture de Ficher transactions!" << endl;
+				break;
+			}	
 		}
+		//fermeture
+			transFile.close();
 	}
 	else {
 		cout << "Erreur d'ouverture du fichier de transactions !" << endl;

@@ -5,10 +5,10 @@
 class TransactionManager {
 private:
 	//attributs
-	GeneralManager gManager;
+	GeneralManager* gManager;
 public:
 	//constructeur
-	TransactionManager(GeneralManager gm);
+	TransactionManager(GeneralManager* gm);
 	//destructeur
 	~TransactionManager();
 	//methodes

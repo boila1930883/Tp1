@@ -143,10 +143,11 @@ void GeneralManager::AddOrder(Order* newOrder) {
 }
 
 bool GeneralManager::RemoveAllOrdersFrom(std::string sender) {
-	Order * currentOrder = this->getOrderList();
+	Order* currentOrder = this->getOrderList();
+	Order* ptrOrder;
 	Cookie* currentCookie = nullptr;
 	
-	while (currentOrder != nullptr) {
+	while (currentOrder->getNext() != nullptr) {
 		if (currentOrder->getSender()->getName() == sender) {
 			// On soustrait les biscuits annules
 			currentCookie = currentOrder->getList();
@@ -155,24 +156,28 @@ bool GeneralManager::RemoveAllOrdersFrom(std::string sender) {
 				currentCookie = currentCookie->getNext();
 			}
 
-			if (currentOrder == this->getOrderList()) { // Tete
-				currentOrder->getNext()->setPrevious(nullptr);
-				this->orderList = currentOrder->getNext();
-				delete currentOrder;
-			}
-			else if (currentOrder->getNext() == nullptr) {	// Si queue
+			
+			if (currentOrder->getNext() == nullptr) {	// Si queue
 				currentOrder->getPrevious()->setNext(nullptr);
 				delete currentOrder;
 				return true;
 			}
+			if (currentOrder == this->getOrderList()) { // Tete
+					currentOrder->getNext()->setPrevious(nullptr);
+					this->orderList = currentOrder->getNext();
+				    delete currentOrder;		
+					currentOrder = this->orderList;
+			}
+			else {
+				// Si ni queue ni tete
+				currentOrder->getPrevious()->setNext(currentOrder->getNext());
+				currentOrder->getNext()->setPrevious(currentOrder->getPrevious());
 
-			// Si ni queue ni tete
-			currentOrder->getPrevious()->setNext(currentOrder->getNext());
-			currentOrder->getNext()->setPrevious(currentOrder->getPrevious());
+				ptrOrder = currentOrder->getNext();
 
-			
-
-			delete currentOrder;
+				delete currentOrder;
+				currentOrder = ptrOrder;
+			}
 		}
 		currentOrder = currentOrder->getNext();
 	}
@@ -185,8 +190,12 @@ std::string GeneralManager::GetDescriptionOfAllOrdersFrom(std::string sender) {
 	Order* currentOrder = this->getOrderList();
 
 	while (currentOrder != nullptr) {
-		if (currentOrder->getSender()->getName() == sender)
+		if (currentOrder->getSender()->getName() == sender) {
 			description += currentOrder->toString();
+			description += '\n';
+		}
+
+		currentOrder = currentOrder->getNext();
 	}
 
 	return description;
@@ -220,6 +229,8 @@ Cookie* GeneralManager::getMostPopularCookie(void) {
 	while (currentCookie != nullptr) {
 		if (currentCookie->getNbCookiesOrdered() > mostPopularCookie->getNbCookiesOrdered())
 			mostPopularCookie = currentCookie;
+
+		currentCookie = currentCookie->getNext();
 	}
 
 	return mostPopularCookie;
@@ -237,7 +248,7 @@ Order* GeneralManager::getOrderList(void) {
 	return orderList;
 }
 
-Customer* GeneralManager::getCustomer(std::string name) { // Retourne null si le customer n'existe pas
+Customer* GeneralManager::getCustomer(std::string name) { // Fait un nouveau customer s'il n'y a pas
 	Customer* currentCustomer = this->getCustomerList();
 
 	while (currentCustomer != nullptr) {
@@ -247,7 +258,9 @@ Customer* GeneralManager::getCustomer(std::string name) { // Retourne null si le
 		currentCustomer = currentCustomer->getNext();
 	}
 
-	return currentCustomer;
+	Customer* newCus = new Customer(name, "adresse non-trouvé", 0);
+	this->AddCustomer(newCus);
+	return newCus;
 }
 
 std::string GeneralManager::getOrderListDescription(void) {
