@@ -81,6 +81,7 @@ bool GeneralManager::AddCustomer(Customer* newCustomer, int index) { // Retourne
 	currentCustomer->setPrevious(newCustomer);
 	return true;
 }
+
 bool GeneralManager::RemoveCustomer(std::string name) {
 	Customer* currentCustomer = this->getCustomerList();
 
@@ -148,7 +149,8 @@ bool GeneralManager::RemoveAllOrdersFrom(std::string sender) {
 	Cookie* currentCookie = nullptr;
 	
 	while (currentOrder->getNext() != nullptr) {
-		if (currentOrder->getSender()->getName() == sender) {
+		if (currentOrder->getSender()->getName() == sender || 
+			currentOrder->getReceiver()->getName() == sender) {
 			// On soustrait les biscuits annules
 			currentCookie = currentOrder->getList();
 			while (currentCookie != nullptr) {
@@ -167,6 +169,7 @@ bool GeneralManager::RemoveAllOrdersFrom(std::string sender) {
 					this->orderList = currentOrder->getNext();
 				    delete currentOrder;		
 					currentOrder = this->orderList;
+					continue;
 			}
 			else {
 				// Si ni queue ni tete
@@ -177,6 +180,7 @@ bool GeneralManager::RemoveAllOrdersFrom(std::string sender) {
 
 				delete currentOrder;
 				currentOrder = ptrOrder;
+				continue;
 			}
 		}
 		currentOrder = currentOrder->getNext();
@@ -257,7 +261,7 @@ Customer* GeneralManager::getCustomer(std::string name) { // Fait un nouveau cus
 		}
 		currentCustomer = currentCustomer->getNext();
 	}
-
+	std::cout << "Customer non trouvé, creation de custumer temporaire. ";
 	Customer* newCus = new Customer(name, "adresse non-trouvé", 0);
 	this->AddCustomer(newCus);
 	return newCus;

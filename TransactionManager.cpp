@@ -29,11 +29,11 @@ void TransactionManager::surpimerClient(std::string nomClient) {
 	}
 }
 
-void TransactionManager::ajouterClient(std::string nomClient, int positionListe, std::string adresse) {
-	Customer* cust = new Customer(nomClient, adresse, 0);
+void TransactionManager::ajouterClient(std::string nomClient, int NSocial, std::string adresse) {
+	Customer* cust = new Customer(nomClient, adresse, NSocial);
 	// appelle au GeneralManager, afficher le resultat de l'operation
-	if (this->gManager->AddCustomer(cust, positionListe)) {
-		std::cout << "client " << nomClient << " ajouté." << std::endl;
+	if (this->gManager->AddCustomer(cust, 0)) {
+		std::cout << "client " << nomClient << " ajouté.\n" << std::endl;
 	}
 	else {
 		std::cout << "Échec de ajout de client!\n";

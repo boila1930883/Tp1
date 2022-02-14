@@ -179,6 +179,7 @@ void saveLists(GeneralManager* gm, string customerFileName, string orderFileName
 		currentOrder = gm->getOrderList();
 		while (currentOrder != nullptr)
 		{
+			cout << currentOrder->toString()<< endl;
 			orderFile << endl << currentOrder->getSender()->getName() << endl;
 			orderFile << currentOrder->getReceiver()->getName() << endl;
 
