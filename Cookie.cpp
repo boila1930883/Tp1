@@ -1,38 +1,79 @@
+// Projet: 8INF259 - TP1 Commandes de biscuits
+// Étudiants : André Alano, Audrey Bédard et Laurie - Ann Boily
+
+#include "Counter.h"
 #include "Cookie.h"
 #include <string>
 
-Cookie::Cookie(std::string name) {
+using namespace std;
+
+Cookie::Cookie(string name) 
+{
 	this->name = name;
 	this->next = nullptr;
 	this->nbCookiesOrdered = 0;
+
+	Counter::addConstrutor();
 }
 
-Cookie::Cookie(std::string name, int quantity) {
+Cookie::Cookie(string name, int quantity) 
+{
 	this->name = name;
 	this->next = nullptr;
 	this->nbCookiesOrdered = quantity;
+
+	Counter::addConstrutor();
 }
 
-std::string Cookie::getName() {
+Cookie::~Cookie() 
+{
+	Counter::addDestructor();
+}
+
+/*
+	Accesseur du nom 
+*/
+string Cookie::getName() 
+{
 	return this->name;
 }
 
-Cookie* Cookie::getNext() {
+/*
+	Accesseur du biscuit suivant
+*/
+Cookie* Cookie::getNext() 
+{
 	return this->next;
 }
 
-int Cookie::getNbCookiesOrdered() {
+/*
+	Accesseur de la quantité de biscuits
+*/
+int Cookie::getNbCookiesOrdered() 
+{
 	return this->nbCookiesOrdered;
 }
 
-std::string Cookie::toString() {
-	return this->getName() + " " + std::to_string (this->getNbCookiesOrdered()) + "\n";
+/*
+	Retourne le biscuit (pour affichage)
+*/
+string Cookie::toString() 
+{
+	return this->getName() + " " + to_string (this->getNbCookiesOrdered()) + "\n";
 }
 
-void Cookie::setNext(Cookie* newNext) {
+/*
+	Mutateur du biscuit suivant
+*/
+void Cookie::setNext(Cookie* newNext) 
+{
 	this->next = newNext;
 }
 
-void Cookie::setQuantity(int newQuantity) {
+/*
+	Matateur de la quantité de biscuits
+*/
+void Cookie::setQuantity(int newQuantity) 
+{
 	this->nbCookiesOrdered = newQuantity;
 }
