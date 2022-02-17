@@ -120,12 +120,7 @@ bool GeneralManager::AddCustomer(Customer* newCustomer, int index) {
 */
 bool GeneralManager::RemoveCustomer(std::string name) 
 {
-	Customer* currentCustomer = this->getCustomerList();		// Récupérer la liste de clients
-
-	while (currentCustomer != nullptr && currentCustomer->getName() != name)  // Recherche du client au nom X
-	{
-		currentCustomer = currentCustomer->getNext();
-	}
+	Customer* currentCustomer = this->getCustomer(name); // Recherche du client au nom X
 
 	if (currentCustomer == nullptr)		// Si le client n'est pas trouvé
 	{
@@ -199,6 +194,9 @@ bool GeneralManager::RemoveAllOrdersFrom(std::string sender)
 	Order* currentOrder = this->getOrderList();		//	Récupérer la liste de commandes
 	Order* ptrOrder;
 	Cookie* currentCookie = nullptr;
+
+	if (this->getCustomer(sender) == nullptr)
+		return false;
 	
 	while (currentOrder->getNext() != nullptr)		// Parcourir toute la liste et récupérer toutes les commandes associées au client X
 	{
@@ -261,6 +259,10 @@ std::string GeneralManager::GetDescriptionOfAllOrdersFrom(std::string sender)
 		}
 		currentOrder = currentOrder->getNext();
 	}
+
+	if (description == "")
+		description += sender + " n'est pas client ou n'a fait aucune commandes.\n";
+	
 	return description;
 }
 
@@ -353,10 +355,9 @@ Customer* GeneralManager::getCustomer(std::string name)
 		currentCustomer = currentCustomer->getNext();
 	}
 	// Création d'un client "temporaire" si le client n'existe pas dans la liste
-	std::cout << "Customer non trouvé, creation de custumer temporaire. ";
-	Customer* newCus = new Customer(name, "adresse non-trouvé", 0);
-	this->AddCustomer(newCus);
-	return newCus;
+	std::cout << name <<  " est une personne non inscrite.\n";
+
+	return currentCustomer;
 }
 
 /*

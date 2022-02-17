@@ -176,7 +176,7 @@ void TransactionManager::supprimerClient(string nomClient)
 	}
 	else 
 	{
-		cout << "Échec de suppression du client!\n";
+		cout << "Échec de suppression du client!\n\n";
 	}
 }
 
@@ -226,7 +226,15 @@ void TransactionManager::ajouterCommande(string ligneListe)
 	nomReciver = substrng.substr(0, end);
 
 	// creation de nouvelle commande
-	Order* ord = new Order( this->gManager->getCustomer(nomSender),	this->gManager->getCustomer(nomReciver));
+	Customer* sender = this->gManager->getCustomer(nomSender);
+	Customer* receiver = this->gManager->getCustomer(nomReciver);
+
+	if (sender == nullptr || receiver == nullptr) {
+		cout << "Commande invalide.\n\n";
+		return;
+	}
+
+	Order* ord = new Order( sender,	receiver);
 
 	// tant qu'il reste d'information...
 	while (end > 0) 
@@ -258,14 +266,14 @@ void TransactionManager::afficherCommandes(string nomClient)
 	// Appel au GeneralManager et affiche le résultat de l'opération
 	description = this->gManager->GetDescriptionOfAllOrdersFrom(nomClient);
 
-	cout << "Commandes faites pour " << nomClient << ": " << endl << description;
+	cout << "Commandes faites pour " << nomClient << ": " << endl << description << endl;
 }
 
 void TransactionManager::afficherPopulaire() 
 {
-	string nomcookie;
-	// Appel au GeneralManager et affiche le résultat de l'opération
-	nomcookie = this->gManager->getMostPopularCookie()->getName();
+	// On trouve le biscuit le plus populaire
+	Cookie* mostPopularCookie = this->gManager->getMostPopularCookie();
 
-	cout << "Le Biscuit plus populaire est: " << nomcookie << endl;
+	cout << "Le Biscuit plus populaire est: " << mostPopularCookie->getName();
+	cout << ".\nAussi, il a rapporté " << mostPopularCookie->getNbCookiesOrdered() << " $\n\n" ;
 }

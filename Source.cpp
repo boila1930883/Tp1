@@ -58,55 +58,6 @@ void manageTransactions(GeneralManager* gm, string transactionFileName) {
 
 	if (!transFile.fail()) {		// Si l'ouverture du fichier a réussie
 		while (!transFile.eof()) {	// Tant que l'on est pas à la fin du fichier
-
-/* PROBLÈME EN RE-LECTURE DU FICHIER SAUVEGARDÉ
-	- Premier/Dernier client de la liste est en double
-	- Premier/Dernier commande en double et mauvais formatage des biscuits (voir printScreen)
-*/ 
-
-// Charger les listes de clients (customer) et de commandes (order)
-void loadLists(GeneralManager* gm, string customerFileName, string orderFileName) {
-	
-	//----- Charger la liste de clients (customer) -----//
-	string name, streetName;
-	int civicNumber, nbCustomer(0);
-	Customer* ptrCustomer;
-	ifstream customerFile;
-
-	customerFile.open(customerFileName);	
-	if (!customerFile.fail())
-	{
-		while (!customerFile.eof())
-		{
-			customerFile >> name >> civicNumber >> streetName;
-			cout << "Reading : " << name << " " << civicNumber << " " << streetName << "\n";
-			ptrCustomer = new Customer(name, streetName, civicNumber);
-			gm->AddCustomer(ptrCustomer, nbCustomer);
-			nbCustomer = gm->getNbCustomer();
-			cout << ptrCustomer->toString() << endl;
-		}
-		customerFile.close();
-
-		cout << "Liste des customers:\n" << gm->getCustomerListDescription();
-	}
-	else
-		cout << "Erreur d'ouverture du fichier de clients !" << endl;
-
-
-	//----- Charger la liste de commandes (orders) -----//
-	string sender, receiver, cookie;
-	int quantity;
-	Order* ptrOrder;
-	Cookie* ptrCookie;
-	ifstream orderFile;
-	
-	orderFile.open(orderFileName);
-	if (!orderFile.fail())
-	{
-		while (!orderFile.eof())
-		{
-			orderFile >> sender >> receiver;
-
 			
 			transFile >> opCode;	// Lecture de l'opcode
 
@@ -172,31 +123,8 @@ void loadLists(GeneralManager* gm, string customerFileName, string orderFileName
 	else {
 		cout << "Erreur d'ouverture du fichier de transactions !" << endl;
 
-	
-}
-
-void saveLists(GeneralManager* gm, string customerFileName, string orderFileName) {
-	
-	//----- Sauvegarde de la liste de clients (customer) -----//
-	Customer* currentCustomer;
-	ofstream customerFile;
-
-	customerFile.open(customerFileName);
-	if (!customerFile.fail())
-	{
-		currentCustomer = gm->getCustomerList();
-		while (currentCustomer != nullptr)
-		{
-			customerFile << endl << currentCustomer->getName() << endl << currentCustomer->getCivicNumber() << endl << currentCustomer->getStreetName();
-			cout << "Ecriture de " << currentCustomer->toString();
-			currentCustomer = currentCustomer->getNext();
-		}
-		customerFile.close();
-		
-		cout << "Écriture du fichier de clients réussie !" << endl;
 	}
 }
-
 /*
 	Valider le balancement des constructeurs et des destructeurs
 	Permet de valider l'absence de fuite de mémoire liée aux objets (class)
