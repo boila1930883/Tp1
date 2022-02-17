@@ -1,55 +1,87 @@
+// Projet: 8INF259 - TP1 Commandes de biscuits
+// Étudiants : André Alano, Audrey Bédard et Laurie - Ann Boily
+
+#include "Counter.h"
 #include "Order.h"
 
-Order::Order(Customer* sender, Customer* receiver) {
+Order::Order(Customer* sender, Customer* receiver) 
+{
 	this->sender = sender;
 	this->receiver = receiver;
 	this->cookieList = nullptr;
 	this->next = nullptr;
 	this->previous = nullptr;
+
+	Counter::addConstrutor();
 }
-Order::~Order() {
-	// Detruire la cookieList
-	if (this->getList() == nullptr)
-		return;
 
-	Cookie* currentCookie1 = this->getList();
-	Cookie* currentCookie2 = nullptr;
+Order::~Order()				
+{
+	// Destruction de la liste de biscuit
+	Cookie* currentList = this->getList();
+	Cookie* currentCookie = currentList;
 
-	while (currentCookie2 != nullptr) {
-		delete currentCookie1;
-		currentCookie1 = currentCookie2;
+	while (currentList != nullptr) 
+	{
+		currentList = currentList->getNext();
+		delete currentCookie;
+		currentCookie = currentList;
 	}
-
-	this->cookieList = nullptr;
+	
+	Counter::addDestructor();
 }
-void Order::AddTypeOfCookie(Cookie* cookie) {
-	Cookie* currentCookie = this->getList();
-	if (currentCookie == nullptr) {
+
+/*
+	Ajouter un biscuit à la liste
+*/
+void Order::AddTypeOfCookie(Cookie* cookie) 
+{
+	Cookie* currentCookie = this->getList();		// Récupérer la liste
+	if (currentCookie == nullptr)					// Si la liste est vide
+	{
 		this->cookieList = cookie;
 		return;
 	}
-
-	cookie->setNext(currentCookie);
+	cookie->setNext(currentCookie);				// Sinon, ajouter en tête de liste
 	this->cookieList = cookie;
 }
 
-Cookie* Order::getList() {
+/*
+	Accesseur de la liste de biscuits
+*/
+Cookie* Order::getList() 
+{
 	return this->cookieList;
 }
-Customer* Order::getSender() {
+
+/*
+	Accesseur du client source
+*/
+Customer* Order::getSender() 
+{
 	return this->sender;
 }
 
-Customer* Order::getReceiver() {
+/*
+	Accesseur du client destinataire
+*/
+Customer* Order::getReceiver() 
+{
 	return this->receiver;
 }
-std::string Order::toString() {
+
+/*
+	Retourne la commande incluant la liste de biscuit (pour affichage)
+*/
+std::string Order::toString() 
+{
 	std::string orderDescription = "";
 	Cookie* currentCookieType = this->getList();
 
 	orderDescription += (this->sender->getName() + "\n" + this->receiver->getName() + "\n");
 
-	while (currentCookieType != nullptr) {
+	while (currentCookieType != nullptr) 
+	{
 		orderDescription += (currentCookieType->toString());
 		currentCookieType = currentCookieType->getNext();
 	}
@@ -58,16 +90,34 @@ std::string Order::toString() {
 	return orderDescription;
 }
 
-Order* Order::getPrevious() {
+/*
+	Accesseur de la commande précédente
+*/
+Order* Order::getPrevious() 
+{
 	return this->previous;
 }
-Order* Order::getNext() {
+
+/*
+	Accesseur de la commande suivante
+*/
+Order* Order::getNext() 
+{
 	return this->next;
 }
 
-void Order::setNext(Order* newNext) {
+/*
+	Mutateur de la commande suivante
+*/
+void Order::setNext(Order* newNext) 
+{
 	this->next = newNext;
 }
-void Order::setPrevious(Order* newPrevious) {
+
+/*
+	Mutateur de la commande précédente
+*/
+void Order::setPrevious(Order* newPrevious) 
+{
 	this->previous = newPrevious;
 }

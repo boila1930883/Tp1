@@ -1,11 +1,21 @@
+// Projet: 8INF259 - TP1 Commandes de biscuits
+// Étudiants : André Alano, Audrey Bédard et Laurie - Ann Boily
+
 #pragma once
+
 #include <iostream>
 #include <string>
 
-class Customer { // Un customer contient un nom, un nom de rue et un numero civique
+/*
+Liste de clients contenent un client, un pointeur sur le client suivant et un pointeur sur le client précédent.
+Un client contient un nom, un numero civique et un nom de rue
+*/
+class Customer {
 
 	public:
 		Customer(std::string name, std::string streetName, int civicNumber);
+		~Customer();
+
 		std::string getName();
 		std::string getStreetName();
 		int getCivicNumber();

@@ -1,77 +1,65 @@
+/*
+Projet: 8INF259 - TP1 Commandes de biscuits
+Étudiants: André Alano, Audrey Bédard et Laurie-Ann Boily 
+Date: 18 février 2022
+Description: Programme qui permet la gestion des listes de clients, de commandes et facilite leur traitement
+*/
+
 #include <fstream>
 #include <iostream>
 #include <string>
+#include "Counter.h"
 #include "Cookie.h"
 #include "Customer.h"
 #include "Order.h"
 #include "GeneralManager.h"
+#include "TransactionManager.h"
 
 using namespace std;
 
-void loadLists(GeneralManager* gm, string customerFileName, string orderFileName); // Pour charger les listes de clients (customer) et de commandes (order)
-void saveLists(GeneralManager* gm, string customerFileName, string orderFileName); // Pour enregistrer les listes de clients (customer) et de commandes (order)
+void manageTransactions(GeneralManager* gm, string transactionFileName); // Lecture et application des transactions
+void displayClassBalance(); // Pour valider le balancement des constructeurs et des destructeurs
 
+/*
+	Fonction principale
+*/
 int main(void) {
 	
-	string customerFileName("PRESIDENTS_CLIENTS.txt"), orderFileName("PRESIDENTS_COMMANDES.txt"); // Pour le moment, car le nom du fichier sera lu � partir du fichier de transactions
-
+	string transactionFileName("PRESIDENTS_TRANSACTIONS.txt");	// Nom du fichier de transactions
+	
 	GeneralManager* gm = new GeneralManager();
-
 
 	setlocale(LC_CTYPE, "fr-FR");
 
-	loadLists(gm, customerFileName, orderFileName);
-
-	saveLists(gm, customerFileName, orderFileName);
-
-	/* Pour tester les classes
-	Cookie* c0 = new Cookie("Aux patates", 3);
-	Cookie* c1 = new Cookie("Aux amandes", 4);
-	Cookie* c2 = new Cookie("Au chocolat", 10);
-
-	Customer* cu0 = new Customer("Galio", "Mid", 10);
-	Customer* cu1 = new Customer("Vayne", "Bot", 20);
-	Customer* cu2 = new Customer("Viktor", "Mid", 15);
-	Customer* cu3 = new Customer("Asol", "Jg", 11);
-
-	Order* o1 = new Order(cu0, cu1);
-	Order* o2 = new Order(cu1, cu3);
-
-	cout << "order " << o1->toString();
-	cout << "order" << o2->toString();
-
-	o1->AddTypeOfCookie(c0);
-	o1->AddTypeOfCookie(c1);
-	cout << "order " << o1->toString();
-	cout << "order" << o2->toString();
-
-	GeneralManager gm = GeneralManager();
-	gm->AddCustomer(cu0);
-	gm->AddCustomer(cu0);
-	gm->AddCustomer(cu1);
-	gm->AddCustomer(cu2);
-	gm->AddCustomer(cu3, 2);
-	cout << "Liste des customers:\n" << gm->getCustomerListDescription();
-
-	gm->AddOrder(o1);
-	gm->AddOrder(o2);
-	cout << "Liste des Commandes:\n" << gm->getOrderListDescription();
-	cout << "Liste des Types de biscuits\n" << gm->getCookieListDescription();
-
-	gm->RemoveAllOrdersFrom("Galio");
-	cout << "Liste des Commandes:\n" << gm->getOrderListDescription();
-	cout << "Liste des Types de biscuits\n" << gm->getCookieListDescription();
-	//*/
-
+	manageTransactions(gm, transactionFileName);	// Traitement des transactions
 	
-	//delete gm;
-	//gm = nullptr;
+	delete gm;
+	gm = nullptr;
+
+	displayClassBalance();	// Affichage du nombre de construteurs/destructeurs
+
 	
 	system("pause");
 	return 0;
 }
 
-/* PROBL�ME EN RE-LECTURE DU FICHIER SAUVEGARD�
+/*
+	Lecture et application des transactions
+*/
+void manageTransactions(GeneralManager* gm, string transactionFileName) {
+	// variables
+	char opCode;
+	int tempInt;
+	string tempString, tempLine, orderFileName, customerFileName;
+	ifstream transFile;
+	TransactionManager trm(gm);
+
+	transFile.open(transactionFileName);
+
+	if (!transFile.fail()) {		// Si l'ouverture du fichier a réussie
+		while (!transFile.eof()) {	// Tant que l'on est pas à la fin du fichier
+
+/* PROBLÈME EN RE-LECTURE DU FICHIER SAUVEGARDÉ
 	- Premier/Dernier client de la liste est en double
 	- Premier/Dernier commande en double et mauvais formatage des biscuits (voir printScreen)
 */ 
@@ -118,29 +106,72 @@ void loadLists(GeneralManager* gm, string customerFileName, string orderFileName
 		while (!orderFile.eof())
 		{
 			orderFile >> sender >> receiver;
+
 			
-			ptrOrder = new Order(gm->getCustomer(sender), gm->getCustomer(receiver)); 
-			// On prend pour acquis que le client source (sender) et le client destinataire (receiver) sont inscrit � la liste de clients lors du chargement
+			transFile >> opCode;	// Lecture de l'opcode
 
-			orderFile >> cookie;
+			//----- Choix du traitement en fonction de l'opcode -----//
+			switch(opCode) {	
+			
+			// Supprimer un client ainsi que toutes ses commandes associées de la liste
+			case '-':				
+				transFile >> tempString;	// Lecture du nom du client à supprimer
+				trm.supprimerClient(tempString);
+				break;
 
-			do
-			{
-				orderFile >> quantity;
-				ptrCookie = new Cookie(cookie, quantity);
-				ptrOrder->AddTypeOfCookie(ptrCookie);
+			// Ajouter un client et ses informations associés
+			case '+':				
+				transFile >> tempString;	// Lecture du nom du client
+				transFile >> tempInt;		// Lecture du no. civique
+				transFile >> tempLine;		// Lecture du nom de rue
+				trm.ajouterClient(tempString, tempInt, tempLine);
+				break;
+			
+			// Ajouter une commande
+			case '=':
+				tempString = "";		// Compilation des éléments de la commande sous forme d'un texte qui sera déchiffrée par la fonctionalité d'ajout
+				tempLine = "";
+				do {	
+					tempLine += tempString;
+					tempLine += '-';
+					transFile >> tempString;
+				} while (tempString != "&");
+				trm.ajouterCommande(tempLine);
+				break;
+				
+			// Afficher toutes les commandes d'un client
+			case '?':
+				transFile >> tempString;	// Lecture du nom du client
+				trm.afficherCommandes(tempString);
+				break;
 
-				orderFile >> cookie;
-			} while (cookie != "&");
-			cout << ptrOrder->toString();
-			gm->AddOrder(ptrOrder);
+			// Affichier le biscuit plus populaire et le montant total reçu pour ce dernier
+			case '$':
+				trm.afficherPopulaire();
+				break;
+
+			// Ouvrir et charger les fichiers "CLIENTS" et " COMMANDES "
+			case 'O':
+				transFile >> customerFileName >> orderFileName;		// Lecture des noms de fichiers
+				trm.chargementListes(customerFileName, orderFileName);
+				break;
+
+			// Enregistrer dans les fichiers "CLIENTS" et " COMMANDES "
+			case 'S':
+				transFile >> customerFileName >> orderFileName;		// Lecture des noms de fichiers
+				trm.sauvegardeListes(customerFileName, orderFileName);
+				break;
+
+			default:
+				cout << "Problème de lecture du ficher de transactions!" << endl;
+				break;
+			}	
 		}
-		orderFile.close();
-
-		cout << "Liste des Commandes:\n" << gm->getOrderListDescription();
+		transFile.close();
 	}
-	else
-		cout << "Erreur d'ouverture du fichier de commandes !" << endl;
+	else {
+		cout << "Erreur d'ouverture du fichier de transactions !" << endl;
+
 	
 }
 
@@ -162,40 +193,17 @@ void saveLists(GeneralManager* gm, string customerFileName, string orderFileName
 		}
 		customerFile.close();
 		
-		cout << "�criture du fichier de clients r�ussie !" << endl;
+		cout << "Écriture du fichier de clients réussie !" << endl;
 	}
-	else
-		cout << "Erreur d'�criture du fichier de clients !" << endl;
+}
 
-
-	//----- Sauvegarde de la liste de commandes (order) -----//
-	Order* currentOrder;
-	Cookie* currentCookie;
-	ofstream orderFile;
-	
-	orderFile.open(orderFileName); 
-	if (!orderFile.fail())
-	{
-		currentOrder = gm->getOrderList();
-		while (currentOrder != nullptr)
-		{
-			orderFile << endl << currentOrder->getSender()->getName() << endl;
-			orderFile << currentOrder->getReceiver()->getName() << endl;
-
-			currentCookie = currentOrder->getList();
-			while (currentCookie != nullptr)
-			{
-				orderFile << currentCookie->getName() << " " << currentCookie->getNbCookiesOrdered() << endl;
-				currentCookie = currentCookie->getNext();
-			}
-			orderFile << "&";
-
-			currentOrder = currentOrder->getNext();
-		}
-		orderFile.close();
-
-		cout << "�criture du fichier de commandes r�ussie !" << endl;
-	}
-	else
-		cout << "Erreur d'�criture du fichier de commandes !" << endl;
+/*
+	Valider le balancement des constructeurs et des destructeurs
+	Permet de valider l'absence de fuite de mémoire liée aux objets (class)
+*/
+void displayClassBalance() {
+	cout << endl << endl;
+	cout << endl << "-----------------------------" << endl
+		<< "NB constructeurs           : " << Counter::getNbConstructors() << endl
+		<< "NB destructeurs            : " << Counter::getNbDestructors() << endl;
 }
