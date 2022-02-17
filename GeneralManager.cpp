@@ -1,5 +1,5 @@
 // Projet: 8INF259 - TP1 Commandes de biscuits
-// Étudiants : André Alano, Audrey Bédard et Laurie - Ann Boily
+// Ã‰tudiants : AndrÃ© Alano, Audrey BÃ©dard et Laurie - Ann Boily
 
 #include "Counter.h"
 #include "GeneralManager.h"
@@ -48,22 +48,22 @@ GeneralManager::~GeneralManager(void)
 }
 
 /*
-	Ajouter un client à la liste de client
+	Ajouter un client Ã  la liste de client
 */
 void GeneralManager::AddCustomer(Customer* newCustomer) 
 { 
-	this->AddCustomer(newCustomer, 0);		// Appel à la méthode d'ajout de client avec position
+	this->AddCustomer(newCustomer, 0);		// Appel Ã  la mÃ©thode d'ajout de client avec position
 }
 
 /*
-	Ajouter un client à une certaine position de la liste de client
-	Retourne false si la position est supérieure à la taille de la liste
+	Ajouter un client Ã  une certaine position de la liste de client
+	Retourne false si la position est supÃ©rieure Ã  la taille de la liste
 */
 bool GeneralManager::AddCustomer(Customer* newCustomer, int index) {
 
 	int currentIndex = 0;
 
-	Customer* currentCustomer = this->getCustomerList();	// Récupérer la liste de clients
+	Customer* currentCustomer = this->getCustomerList();	// RÃ©cupÃ©rer la liste de clients
 
 	if (index > this->getNbCustomer() || index < 0)			// Si la position n'est pas valide
 	{
@@ -76,21 +76,21 @@ bool GeneralManager::AddCustomer(Customer* newCustomer, int index) {
 
 	if (this->getCustomerList() == nullptr)			// Si la liste est vide
 	{
-		this->customersList = newCustomer;			// Ajouter le client comme premier élément
+		this->customersList = newCustomer;			// Ajouter le client comme premier Ã©lÃ©ment
 		return true;
 	}
 
-	if (index == 0)									// Pour ajouter en tête de liste
-	{
+	if (index == 0) {						// Ajout Ã  la tÃªte lors du chargement de la liste et pour ajouter en tÃªte liste
 		currentCustomer->setPrevious(newCustomer);
 		newCustomer->setNext(currentCustomer);
 		this->customersList = newCustomer;
 		return true;
 	}
-
-	while (currentIndex != index)					// Pour récupérer l'élément X de la liste
+  
+	while (currentIndex != index)					// Pour rÃ©cupÃ©rer l'Ã©lÃ©ment X de la liste
 	{
-		if (currentCustomer->getNext() != nullptr)	// Si l'élément suivant existe (la liste n'est pas entrain d'être créée)
+		if (currentCustomer->getNext() != nullptr)	// Si l'Ã©lÃ©ment suivant existe (la liste n'est pas entrain d'Ãªtre crÃ©Ã©e)
+
 		{
 			currentCustomer = currentCustomer->getNext();
 		}
@@ -105,7 +105,7 @@ bool GeneralManager::AddCustomer(Customer* newCustomer, int index) {
 		return true;
 	}
 
-	// Pour ajouter à la position récupérée (sauf en tête et en queue)
+	// Pour ajouter Ã  la position rÃ©cupÃ©rÃ©e (sauf en tÃªte et en queue)
 	newCustomer->setNext(currentCustomer) ;
 	newCustomer->setPrevious(currentCustomer->getPrevious());
 	currentCustomer->getPrevious()->setNext(newCustomer);
@@ -115,26 +115,26 @@ bool GeneralManager::AddCustomer(Customer* newCustomer, int index) {
 
 /*
 	Retirer un client de la liste
-	Recoit le nom du client à retirer
+	Recoit le nom du client Ã  retirer
 	Retourne false si le client n'est pas dans la liste
 */
 bool GeneralManager::RemoveCustomer(std::string name) 
 {
-	Customer* currentCustomer = this->getCustomerList();		// Récupérer la liste de clients
+	Customer* currentCustomer = this->getCustomerList();		// RÃ©cupÃ©rer la liste de clients
 
 	while (currentCustomer != nullptr && currentCustomer->getName() != name)  // Recherche du client au nom X
 	{
 		currentCustomer = currentCustomer->getNext();
 	}
 
-	if (currentCustomer == nullptr)		// Si le client n'est pas trouvé
+	if (currentCustomer == nullptr)		// Si le client n'est pas trouvÃ©
 	{
 		return false;
 	}
 	
 	nbCustomer--;
 
-	if (this->getCustomerList() == currentCustomer)		// Pour retirer en tête de liste
+	if (this->getCustomerList() == currentCustomer)		// Pour retirer en tÃªte de liste
 	{ 
 		this->customersList = currentCustomer->getNext();
 		currentCustomer->getNext()->setPrevious(nullptr);
@@ -157,12 +157,12 @@ bool GeneralManager::RemoveCustomer(std::string name)
 }
 
 /*
-	Ajouter une commande à la liste de commandes
+	Ajouter une commande Ã  la liste de commandes
 */
 void GeneralManager::AddOrder(Order* newOrder) 
 {
-	Order* currentOrder = this->getOrderList();			// Récupérer la liste de commandes
-	Cookie* currentOrderCookie = newOrder->getList();	// Récupérer la liste de biscuits associée à la commande
+	Order* currentOrder = this->getOrderList();			// RÃ©cupÃ©rer la liste de commandes
+	Cookie* currentOrderCookie = newOrder->getList();	// RÃ©cupÃ©rer la liste de biscuits associÃ©e Ã  la commande
 	Cookie* cookieType = nullptr;
 	
 	while (currentOrderCookie != nullptr) 
@@ -196,15 +196,15 @@ void GeneralManager::AddOrder(Order* newOrder)
 */
 bool GeneralManager::RemoveAllOrdersFrom(std::string sender) 
 {
-	Order* currentOrder = this->getOrderList();		//	Récupérer la liste de commandes
+	Order* currentOrder = this->getOrderList();		//	RÃ©cupÃ©rer la liste de commandes
 	Order* ptrOrder;
 	Cookie* currentCookie = nullptr;
 	
-	while (currentOrder->getNext() != nullptr)		// Parcourir toute la liste et récupérer toutes les commandes associées au client X
+	while (currentOrder->getNext() != nullptr)		// Parcourir toute la liste et rÃ©cupÃ©rer toutes les commandes associÃ©es au client X
 	{
 		if (currentOrder->getSender()->getName() == sender || currentOrder->getReceiver()->getName() == sender) 
 		{
-			// On soustrait les biscuits annulés
+			// On soustrait les biscuits annulÃ©s
 			currentCookie = currentOrder->getList();
 			while (currentCookie != nullptr) 
 			{
@@ -219,7 +219,7 @@ bool GeneralManager::RemoveAllOrdersFrom(std::string sender)
 				return true;
 			}
 
-			if (currentOrder == this->getOrderList())	// Si c'est en tête de liste
+			if (currentOrder == this->getOrderList())	// Si c'est en tÃªte de liste
 			{ 
 					currentOrder->getNext()->setPrevious(nullptr);
 					this->orderList = currentOrder->getNext();
@@ -227,7 +227,7 @@ bool GeneralManager::RemoveAllOrdersFrom(std::string sender)
 					currentOrder = this->orderList;
 					continue;
 			}
-			else										// Si c'est ni en tête, ni en queue de liste
+			else										// Si c'est ni en tÃªte, ni en queue de liste
 			{
 				currentOrder->getPrevious()->setNext(currentOrder->getNext());
 				currentOrder->getNext()->setPrevious(currentOrder->getPrevious());
@@ -245,14 +245,14 @@ bool GeneralManager::RemoveAllOrdersFrom(std::string sender)
 }
 
 /*
-	Retourne la liste de toutes les commandes effectuées par le client X
+	Retourne la liste de toutes les commandes effectuÃ©es par le client X
 */
 std::string GeneralManager::GetDescriptionOfAllOrdersFrom(std::string sender) 
 {
 	std::string description = "";
-	Order* currentOrder = this->getOrderList();		// Récupérer la lite de commandes
+	Order* currentOrder = this->getOrderList();		// RÃ©cupÃ©rer la lite de commandes
 
-	while (currentOrder != nullptr)					// Parcourir la liste et récupérer toutes les commandes du client X
+	while (currentOrder != nullptr)					// Parcourir la liste et rÃ©cupÃ©rer toutes les commandes du client X
 	{
 		if (currentOrder->getSender()->getName() == sender) 
 		{
@@ -270,7 +270,7 @@ std::string GeneralManager::GetDescriptionOfAllOrdersFrom(std::string sender)
 */
 Cookie* GeneralManager::FindCookieType(std::string name) 
 {	
-	Cookie* currentCookie = this->cookieList;		// Récupérer la liste de biscuits
+	Cookie* currentCookie = this->cookieList;		// RÃ©cupÃ©rer la liste de biscuits
 
 	while (currentCookie != nullptr)		// Parcourir la liste et renvoyer le biscuit au nom X
 	{
@@ -284,7 +284,7 @@ Cookie* GeneralManager::FindCookieType(std::string name)
 }
 
 /*
-	Ajoute un biscuit à la liste des biscuits existants
+	Ajoute un biscuit Ã  la liste des biscuits existants
 */
 void GeneralManager::AddCookieType(Cookie* cookieType) 
 {
@@ -314,7 +314,7 @@ Cookie* GeneralManager::getMostPopularCookie(void)
 }
 
 /*
-	Accesseur de la liste complète des biscuits
+	Accesseur de la liste complÃ¨te des biscuits
 */
 Cookie* GeneralManager::getCookieTypeList(void) 
 {
@@ -342,7 +342,7 @@ Order* GeneralManager::getOrderList(void)
 */
 Customer* GeneralManager::getCustomer(std::string name) 
 { 
-	Customer* currentCustomer = this->getCustomerList();	// Récupérer la liste de clients
+	Customer* currentCustomer = this->getCustomerList();	// RÃ©cupÃ©rer la liste de clients
 
 	while (currentCustomer != nullptr)		// Parcourir la liste et retourne le client au nom X
 	{
@@ -352,9 +352,9 @@ Customer* GeneralManager::getCustomer(std::string name)
 		}
 		currentCustomer = currentCustomer->getNext();
 	}
-	// Création d'un client "temporaire" si le client n'existe pas dans la liste
-	std::cout << "Customer non trouvé, creation de custumer temporaire. ";
-	Customer* newCus = new Customer(name, "adresse non-trouvé", 0);
+	// CrÃ©ation d'un client "temporaire" si le client n'existe pas dans la liste
+	std::cout << "Customer non trouvÃ©, creation de custumer temporaire. ";
+	Customer* newCus = new Customer(name, "adresse non-trouvÃ©", 0);
 	this->AddCustomer(newCus);
 	return newCus;
 }
@@ -365,9 +365,9 @@ Customer* GeneralManager::getCustomer(std::string name)
 std::string GeneralManager::getOrderListDescription(void) 
 {
 	std::string description = "";
-	Order* currentOrder = this->getOrderList();		// Récupérer la liste
+	Order* currentOrder = this->getOrderList();		// RÃ©cupÃ©rer la liste
 
-	while (currentOrder != nullptr)					// Parcourir la liste et extraire chaque élément
+	while (currentOrder != nullptr)					// Parcourir la liste et extraire chaque Ã©lÃ©ment
 	{
 		description += currentOrder->toString();
 		currentOrder = currentOrder->getNext();
@@ -381,9 +381,9 @@ std::string GeneralManager::getOrderListDescription(void)
 std::string GeneralManager::getCustomerListDescription(void) 
 {
 	std::string description = "";
-	Customer* currentCustomer = this->getCustomerList();	// Récupérer la liste
+	Customer* currentCustomer = this->getCustomerList();	// RÃ©cupÃ©rer la liste
 
-	while (currentCustomer != nullptr)						// Parcourir la liste et extraire chaque élément
+	while (currentCustomer != nullptr)						// Parcourir la liste et extraire chaque Ã©lÃ©ment
 	{
 		description += currentCustomer->toString();
 		currentCustomer = currentCustomer->getNext();
@@ -397,9 +397,9 @@ std::string GeneralManager::getCustomerListDescription(void)
 std::string GeneralManager::getCookieListDescription(void) 
 {
 	std::string description = "";
-	Cookie* currentCookie = this->getCookieTypeList();		// Récupérer la liste
+	Cookie* currentCookie = this->getCookieTypeList();		// RÃ©cupÃ©rer la liste
 
-	while (currentCookie != nullptr)						// Parcourir la liste et extraire chaque élément
+	while (currentCookie != nullptr)						// Parcourir la liste et extraire chaque Ã©lÃ©ment
 	{
 		description += currentCookie->toString();			
 		currentCookie = currentCookie->getNext();
